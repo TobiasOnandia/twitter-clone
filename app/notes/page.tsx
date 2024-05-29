@@ -3,7 +3,12 @@ import React from 'react';
 
 export default async function Notes() {
   const supabase = createClient();
-  const { data: notes } = await supabase.from("posts").select();
+  const { data: posts } = await supabase.from("posts").select();
 
-  return <pre>{JSON.stringify(notes, null, 2)}</pre>
+  return (
+  <div>
+    <pre>{JSON.stringify(posts, null, 2)}</pre>
+  </div>
+  
+)
 }

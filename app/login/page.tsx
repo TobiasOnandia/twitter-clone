@@ -10,23 +10,16 @@ export default function Login({
 }: {
   searchParams: { message: string };
 }) {
-  const signIn = async (formData: FormData) => {
+  const signIn = async () => {
     "use server";
-
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: 'http://localhost:3000/auth/callback'
+      },
     });
-
-    if (error) {
-      return redirect("/login?message=Could not authenticate user");
-    }
-
-    return redirect("/protected");
   };
 
   const signUp = async (formData: FormData) => {
@@ -75,26 +68,6 @@ export default function Login({
         Back
       </Link>
 
-      <form className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
-        <label className="text-md" htmlFor="email">
-          Email
-        </label>
-        <input
-          className="rounded-md px-4 py-2 bg-inherit border mb-6"
-          name="email"
-          placeholder="you@example.com"
-          required
-        />
-        <label className="text-md" htmlFor="password">
-          Password
-        </label>
-        <input
-          className="rounded-md px-4 py-2 bg-inherit border mb-6"
-          type="password"
-          name="password"
-          placeholder="••••••••"
-          required
-        />
         <SubmitButton
           formAction={signIn}
           className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2"
@@ -114,7 +87,6 @@ export default function Login({
             {searchParams.message}
           </p>
         )}
-      </form>
     </div>
   );
 }
